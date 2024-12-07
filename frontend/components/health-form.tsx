@@ -1,13 +1,61 @@
 'use client';
 
 import { useState } from 'react';
+import axios from 'axios';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Label } from '@/components/ui/label';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 
 export default function MedicalHistoryForm() {
-  
+  const [did, setDid] = useState('');
+  const [diseases, setDiseases] = useState([{ disease_name: '', diagnosed_date: '', treatment_status: '' }]);
+
+  const handleDiseaseChange = (index, field, value) => {
+    setDiseases((prevDiseases) => {
+      const updatedDiseases = [...prevDiseases];
+      updatedDiseases[index][field] = value;
+      return updatedDiseases;
+    });
+  };
+
+  const addDisease = () => {
+    setDiseases((prevDiseases) => [
+      ...prevDiseases,
+      { disease_name: '', diagnosed_date: '', treatment_status: '' },
+    ]);
+  };
+
+  const removeDisease = (index) => {
+    setDiseases((prevDiseases) => prevDiseases.filter((_, i) => i !== index));
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+
+    const payload = {
+      did,
+      diseases,
+    };
+
+    try {
+      const response = await axios.post('http://localhost:5000/api/data/add', payload, {
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      });
+
+      if (response.status === 200) {
+        alert('Medical history submitted successfully!');
+      } else {
+        throw new Error('Failed to submit medical history');
+      }
+    } catch (error) {
+      console.error(error);
+      alert('An error occurred while submitting the form.');
+    }
+  };
+
   return (
     <Card className="w-full max-w-md bg-white shadow-[0_0_15px_rgba(0,0,0,0.1)] border-0">
       <CardHeader className="space-y-1">
