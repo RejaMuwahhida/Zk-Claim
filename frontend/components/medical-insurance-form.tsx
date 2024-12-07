@@ -1,6 +1,7 @@
-'use client';
-
+"use client"
 import { useState } from 'react';
+import axios from 'axios';
+import QRCode from 'react-qr-code';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Label } from '@/components/ui/label';
 import { Input } from '@/components/ui/input';
@@ -8,7 +9,92 @@ import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
 import { Button } from '@/components/ui/button';
 
 export default function MedicalInsuranceForm() {
-  
+  const [formData, setFormData] = useState({
+    name: '',
+    age: '',
+    gender: '',
+    dob: '',
+    address: '',
+    pincode: '',
+    state: '',
+  });
+  const [did, setDid] = useState('');
+  const [qrValue, setQrValue] = useState('');
+  const [loading, setLoading] = useState(false);
+
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setFormData((prev) => ({ ...prev, [name]: value }));
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    if (Object.values(formData).some((field) => !field)) {
+      alert('Please fill out all fields');
+      return;
+    }
+
+    try {
+      setLoading(true);
+
+      // Step 1: Create Identity
+      const identityResponse = await axios.post(
+        'http://localhost:3001/v2/identities',
+        {
+          didMetadata: {
+            method: 'polygonid',
+            blockchain: 'polygon',
+            network: 'amoy',
+            type: 'BJJ',
+          },
+          displayName: formData.name,
+        },
+        {
+          headers: {
+            Authorization: 'Basic dXNlcl91aTpwYXNzd29yZF91aQ==',
+          },
+        }
+      );
+
+      const identifier = identityResponse.data.identifier;
+
+      // Step 2: Create Credential
+      // const credentialResponse = await axios.post(
+      //   `http://localhost:3001/v2/identities/${identifier}/credentials`,
+      //   {
+      //     "credentialSchema": "ipfs://QmPaVcGNujB62hVh942vtkfwxcvUXKfjyzCB6frWRDDo4s",
+      //     "type": "PersonalInformation",
+      //     "credentialSubject": {
+      //       "id": "did:polygonid:polygon:amoy:2qYhUCzH7WoSoMrTpozF8cZ3XQgmu6QTAz4mdQeD1g", // Replace with actual DID
+      //       "name": formData.name,
+      //       "age": formData.age,
+      //       "gender": formData.gender,
+      //       "dob": formData.dob",
+      //       "address": formData.address,
+      //       "pincode": formData.pincode,
+      //       "state": formData.state,
+      //       "documentType": 2
+      //     }
+      //   },
+      //   {
+      //     headers: {
+      //       Authorization: 'Basic dXNlcl91aTpwYXNzd29yZF91aQ==',
+      //     },
+      //   }
+      // );
+
+      // Step 3: Retrieve DID
+      setDid(identifier);
+      setQrValue(identifier);
+      alert('Identity and credential created successfully!');
+    } catch (error) {
+      console.error('Error:', error);
+      alert('An error occurred while processing your request.');
+    } finally {
+      setLoading(false);
+    }
+  };
+
   return (
     <Card className="w-full max-w-md bg-white shadow-[0_0_15px_rgba(0,0,0,0.1)] border-0">
       <CardHeader className="space-y-1">
