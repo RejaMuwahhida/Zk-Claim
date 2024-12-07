@@ -1,38 +1,53 @@
-const User = require('../models/User');
+const axios = require('axios');
 const { generateProof } = require('../services/zkProofService');
+
+const AKAVE_API_BASE_URL = 'http://localhost:8000'; // Base URL for Akave API
 
 exports.receiveEHR = async (req, res) => {
   try {
     const { did } = req.params;
     const { claimDisease } = req.body;
 
-    console.log(did,claimDisease);
+    console.log(did, claimDisease);
 
     if (!did || !claimDisease) {
       return res.status(400).json({ success: false, message: "'did' and 'claimDisease' are required." });
     }
-    const user = await User.findOne({ did });
-    if (!user) {
-      return res.status(404).json({ success: false, message: 'User not found' });
+
+    // Retrieve data from Akave bucket
+    let diseases;
+    try {
+      const bucketDataResponse = await axios.get(`${AKAVE_API_BASE_URL}/buckets/${did}`);
+
+      if (bucketDataResponse.status === 200 && bucketDataResponse.data) {
+        diseases = bucketDataResponse.data?.data?.diseases || [];
+        console.log(`Diseases retrieved from Akave for DID ${did}:`, diseases);
+      } else {
+        return res.status(404).json({ success: false, message: 'No data found for the provided DID in Akave' });
+      }
+    } catch (error) {
+      console.error('Error retrieving data from Akave:', error.response?.data || error.message);
+      return res.status(500).json({
+        success: false,
+        message: 'Error retrieving data from Akave',
+        error: error.response?.data || error.message,
+      });
     }
 
-    const diseases = user.diseases;
-
+    // Check for the claimed disease in retrieved data
     const diseaseToClaim = diseases.find(disease => disease.disease_name === claimDisease);
 
-    var conditionCode;
+    let conditionCode;
 
     if (!diseaseToClaim) {
       conditionCode = 0;
+    } else {
+      conditionCode = 1;
     }
-    else{
-       conditionCode = 1
-    }
-
 
     const inputData = {
       did,
-      conditionCode
+      conditionCode,
     };
 
     console.log('Input data for proof generation:', inputData);
