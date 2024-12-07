@@ -11,7 +11,9 @@
   "description": "",
   "dependencies": {
     "body-parser": "^1.20.3",
+    "cjs": "^0.0.11",
     "cors": "^2.8.5",
+    "dotenv": "^16.4.7",
     "express": "^4.21.2",
     "mongoose": "^8.8.4",
     "morgan": "^1.10.0"
