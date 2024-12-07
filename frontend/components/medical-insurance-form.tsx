@@ -89,7 +89,7 @@ export default function MedicalInsuranceForm() {
       alert('Identity and credential created successfully!');
     } catch (error) {
       console.error('Error:', error);
-      alert('An error occurred while processing your request.');
+      //alert('An error occurred while processing your request.');
     } finally {
       setLoading(false);
     }
