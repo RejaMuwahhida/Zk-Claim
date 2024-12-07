@@ -6,8 +6,59 @@ import { Label } from '@/components/ui/label';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 
-export default function MedicalHistoryForm() {
+export default function HealthForm() {
+  const [did, setDid] = useState('');
+  const [diseases, setDiseases] = useState([{ disease_name: '', diagnosed_date: '', treatment_status: '' }]);
+
+  const handleDiseaseChange = (index, field, value) => {
+    setDiseases((prevDiseases) => {
+      const updatedDiseases = [...prevDiseases];
+      updatedDiseases[index][field] = value;
+      return updatedDiseases;
+    });
+  };
+
+  const addDisease = () => {
+    setDiseases((prevDiseases) => [
+      ...prevDiseases,
+      { disease_name: '', diagnosed_date: '', treatment_status: '' },
+    ]);
+  };
+
+  const removeDisease = (index) => {
+    setDiseases((prevDiseases) => prevDiseases.filter((_, i) => i !== index));
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
   
+    const payload = {
+      did,
+      diseases,
+    };
+  
+    try {
+      const response = await fetch('http://localhost:5001/api/data/add', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(payload),
+      });
+  
+      if (response.ok) {
+        alert('Medical history submitted successfully!');
+      } else {
+        const errorData = await response.json();
+        //throw new Error(errorData.message || 'Failed to submit medical history');
+      }
+    } catch (error) {
+      console.error(error);
+     // alert(`An error occurred: ${error.message}`);
+    }
+  };
+  
+
   return (
     <Card className="w-full max-w-md bg-white shadow-[0_0_15px_rgba(0,0,0,0.1)] border-0">
       <CardHeader className="space-y-1">
