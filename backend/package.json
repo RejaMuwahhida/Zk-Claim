@@ -1,15 +1,15 @@
 {
-  "name": "backend",
+  "name": "zkp",
   "version": "1.0.0",
+  "description": "",
   "main": "server.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "node server.js"
+    "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "",
   "license": "ISC",
-  "description": "",
   "dependencies": {
+    "@reclaimprotocol/js-sdk": "^2.1.0",
     "body-parser": "^1.20.3",
     "cjs": "^0.0.11",
     "cors": "^2.8.5",
@@ -17,5 +17,10 @@
     "express": "^4.21.2",
     "mongoose": "^8.8.4",
     "morgan": "^1.10.0"
+    "express": "^4.21.1",
+    "mongoose": "^8.7.2",
+    "morgan": "^1.10.0",
+    "snarkjs": "^0.7.5",
+    "web3": "^4.16.0"
   }
 }
