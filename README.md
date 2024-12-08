@@ -28,21 +28,10 @@ This project is a decentralized insurance claim system that uses zk-SNARKs, Lit 
 
 ---
 
-## Technologies Used
-### Blockchain
-- **Polygon zkEVM**: For decentralized and scalable execution of zk-SNARK proofs.
+## Architecture
 
-### Privacy & Identity
-- **zk-SNARKs**: To verify eligibility without exposing sensitive data.
-- **Privado**: For secure and decentralized identity verification.
+![photo_2024-12-08_09-13-43](https://github.com/user-attachments/assets/78063c25-45b7-46a4-ac58-1860d15e5e5d)
 
-### Automation
-- **Lit Protocol**: To automate claim transactions using AI agents.
-
-### Data Storage
-- **Akave**: For securely storing project-related data.
-
----
 
 ## Installation
 
