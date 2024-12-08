@@ -94,7 +94,7 @@ This project is a decentralized insurance claim system that uses zk-SNARKs, Lit 
 ---
 
 ## Contributors
-- **Anjana KJ** (Project Lead)
+- **Anjana KJ** 
 - **Jijo Johny**
 - **Anson Antony**
 
