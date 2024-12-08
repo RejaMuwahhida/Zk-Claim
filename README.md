@@ -45,10 +45,12 @@ This project is a decentralized insurance claim system that uses zk-SNARKs, Lit 
 ---
 
 ## Installation
+
+### Backend Setup
 1. Clone the repository:
    ```bash
-   git clone https://github.com/your-repo/insurance-claim-system.git
-   cd insurance-claim-system
+   git clone https://github.com/JijoJohny/Zk-Claim.git
+   cd insurance-claim-system/backend
    ```
 
 2. Install dependencies:
@@ -68,53 +70,31 @@ This project is a decentralized insurance claim system that uses zk-SNARKs, Lit 
 
      ```
 
-4. Start the application:
+4. Start the backend application:
    ```bash
    node app.js
    ```
 
----
+### Frontend Setup
+1. Navigate to the frontend directory:
+   ```bash
+   cd ZK-Claim/frontend
+   ```
 
-## Example Workflow
-### Executing the Lit Action
-To execute a Lit Action, use the `executeJs` function:
+2. Install dependencies:
+   ```bash
+   npm install
+   ```
 
-```javascript
-const response = await litNodeClient.executeJs({
-  sessionSigs: sessionSignatures,
-  code: litActionCode,
-  jsParams: {
-    magicNumber: 43,
-  }
-});
-```
-In this system, the AI agent of the Lit Protocol automatically executes the claim transaction, transferring the insurance amount to the user’s wallet.
-
----
-
-## Smart Contract Interaction
-- The zk-SNARK proof is verified on-chain using a deployed verifier smart contract.
-- The public signals from the proof are used to determine eligibility.
-- If eligible, the Lit Protocol AI agent automates the fund transfer.
-
----
-
-## Challenges
-- **Circuit Generation**: Faced initial difficulties in generating and debugging zk-SNARK circuits. Solved through optimization and testing.
-- **Identity Verification**: Struggled to choose between identity verification methods before opting for Privado for secure DID generation.
-- **Lit Protocol Integration**: Encountered complexities while automating transactions with Lit. Resolved by leveraging detailed documentation and support.
-
----
-
-## Future Enhancements
-- Add support for multiple insurance providers.
-- Implement cross-chain functionality to broaden the platform’s scope.
-- Enhance the AI agent’s decision-making capabilities for dynamic claim handling.
+3. Start the frontend application:
+   ```bash
+   npm start
+   ```
 
 ---
 
 ## Contributors
-- **Anjana KJ** 
+- **Anjana KJ** (Project Lead)
 - **Jijo Johny**
 - **Anson Antony**
 
@@ -129,5 +109,4 @@ This project is licensed under the MIT License.
 - Special thanks to **Polygon** for their zkEVM and developer support.
 - **Lit Protocol** team for their guidance on automation and integration.
 - **Akave** for secure data storage solutions.
-
 
