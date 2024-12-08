@@ -1,5 +1,7 @@
 {
   "/page": "app/page.js",
+  "/health/page": "app/health/page.js",
+  "/verify/page": "app/verify/page.js",
   "/favicon.ico/route": "app/favicon.ico/route.js",
-  "/health/page": "app/health/page.js"
+  "/landing/page": "app/landing/page.js"
 }
