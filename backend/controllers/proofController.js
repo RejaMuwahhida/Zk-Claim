@@ -75,7 +75,6 @@ const checkEligibility = async (req, res) => {
       const message = isEligible
         ? "Eligible for insurance claim"
         : "Not eligible for insurance claim";
-
       // Use Lit Protocol to sign session
       const sessionSignatures = await litNodeClient.getSessionSigs({
         chain: "ethereum",

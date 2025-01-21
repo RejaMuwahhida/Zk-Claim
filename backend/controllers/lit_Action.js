@@ -25,3 +25,12 @@ const go = async () => {
 };
 
 go();
+
+
+
+
+docker run -d`
+  -p 8000:3000`
+  -e NODE_ADDRESS=""`
+  -e PRIVATE_KEY="0x86f63BA9E3Ba2D6eb3276a010d75AAF1077fa49d"`
+  akave/akavelink:latest

@@ -1,7 +1,7 @@
 const axios = require('axios');
 const { generateProof } = require('../services/zkProofService');
 
-const AKAVE_API_BASE_URL = 'http://localhost:8000'; // Base URL for Akave API
+const AKAVE_API_BASE_URL = 'http://localhost:8000';
 
 exports.receiveEHR = async (req, res) => {
   try {
@@ -21,7 +21,7 @@ exports.receiveEHR = async (req, res) => {
 
       if (bucketDataResponse.status === 200 && bucketDataResponse.data) {
         diseases = bucketDataResponse.data?.data?.diseases || [];
-        console.log(`Diseases retrieved from Akave for DID ${did}:`, diseases);
+        console.log('Akave API response:', JSON.stringify(bucketDataResponse.data, null, 2));
       } else {
         return res.status(404).json({ success: false, message: 'No data found for the provided DID in Akave' });
       }
