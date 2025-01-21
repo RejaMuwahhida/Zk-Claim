@@ -1,4 +1,5 @@
-"use client"
+"use client";
+
 import { useState } from 'react';
 import axios from 'axios';
 import QRCode from 'react-qr-code';
@@ -18,9 +19,9 @@ export default function MedicalInsuranceForm() {
     pincode: '',
     state: '',
   });
-  const [did, setDid] = useState('');
-  const [qrValue, setQrValue] = useState('');
   const [loading, setLoading] = useState(false);
+  const [did, setDid] = useState('');
+  const [isSubmitted, setIsSubmitted] = useState(false);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -58,42 +59,40 @@ export default function MedicalInsuranceForm() {
 
       const identifier = identityResponse.data.identifier;
 
-      // Step 2: Create Credential
-      // const credentialResponse = await axios.post(
-      //   `http://localhost:3001/v2/identities/${identifier}/credentials`,
-      //   {
-      //     "credentialSchema": "ipfs://QmPaVcGNujB62hVh942vtkfwxcvUXKfjyzCB6frWRDDo4s",
-      //     "type": "PersonalInformation",
-      //     "credentialSubject": {
-      //       "id": "did:polygonid:polygon:amoy:2qYhUCzH7WoSoMrTpozF8cZ3XQgmu6QTAz4mdQeD1g", // Replace with actual DID
-      //       "name": formData.name,
-      //       "age": formData.age,
-      //       "gender": formData.gender,
-      //       "dob": formData.dob",
-      //       "address": formData.address,
-      //       "pincode": formData.pincode,
-      //       "state": formData.state,
-      //       "documentType": 2
-      //     }
-      //   },
-      //   {
-      //     headers: {
-      //       Authorization: 'Basic dXNlcl91aTpwYXNzd29yZF91aQ==',
-      //     },
-      //   }
-      // );
-
-      // Step 3: Retrieve DID
+      // Update DID and switch to DID view
       setDid(identifier);
-      setQrValue(identifier);
-      alert('Identity and credential created successfully!');
+      setIsSubmitted(true);
     } catch (error) {
       console.error('Error:', error);
-      //alert('An error occurred while processing your request.');
+      alert('An error occurred while processing your request.');
     } finally {
       setLoading(false);
     }
   };
+
+  if (isSubmitted) {
+    return (
+      <div className="flex flex-col items-center justify-center min-h-screen space-y-6">
+        <h1 className="text-2xl font-semibold text-sky-700">Your DID</h1>
+        <p className="text-lg text-gray-700">{did}</p>
+        <div className="mt-4">
+          <QRCode value={did} />
+        </div>
+        <button
+          className="mt-6 bg-sky-600 hover:bg-sky-700 text-white px-4 py-2 rounded-md shadow-md"
+          onClick={() => navigator.clipboard.writeText(did)}
+        >
+          Copy DID
+        </button>
+        <Button
+          className="mt-6 bg-gray-600 hover:bg-gray-700 text-white px-4 py-2 rounded-md shadow-md"
+          onClick={() => setIsSubmitted(false)}
+        >
+          Go Back to Form
+        </Button>
+      </div>
+    );
+  }
 
   return (
     <Card className="w-full max-w-md bg-white shadow-[0_0_15px_rgba(0,0,0,0.1)] border-0">
@@ -103,7 +102,6 @@ export default function MedicalInsuranceForm() {
       </CardHeader>
       <CardContent>
         <form onSubmit={handleSubmit} className="space-y-6">
-          {/* Form Fields */}
           {['name', 'age', 'dob', 'address', 'pincode', 'state'].map((field) => (
             <div key={field} className="space-y-2">
               <Label htmlFor={field} className="text-sm font-medium text-gray-700">
@@ -142,22 +140,6 @@ export default function MedicalInsuranceForm() {
             {loading ? 'Processing...' : 'Submit Application'}
           </Button>
         </form>
-        {did && (
-          <div className="mt-6 text-center">
-            <p className="text-lg font-semibold text-gray-700">Your DID</p>
-            <Input
-              type="text"
-              readOnly
-              value={did}
-              className="border-gray-300 focus:border-sky-500 focus:ring-sky-500 text-center"
-              onClick={() => navigator.clipboard.writeText(did)}
-            />
-            <p className="text-sm text-gray-500">Click to copy</p>
-            <div className="mt-4">
-              <QRCode value={qrValue} />
-            </div>
-          </div>
-        )}
       </CardContent>
     </Card>
   );

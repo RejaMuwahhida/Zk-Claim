@@ -1,4 +1,6 @@
-/** @type {import('next').NextConfig} */
-const nextConfig = {};
+/* @type {import('next').NextConfig} */
+const nextConfig = {
+    productionBrowserSourceMaps: false
+};
 
 export default nextConfig;

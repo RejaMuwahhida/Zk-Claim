@@ -1,19 +1,23 @@
 'use client'
 
+import { Navbar } from '@/components/navbar'
 import { motion } from 'framer-motion'
 import { Button } from "@/components/ui/button"
 import Link from 'next/link'
 
 export default function LandingPage() {
   return (
+    <>
+    <Navbar/>
     <div className="min-h-screen bg-gradient-to-br from-sky-100 to-white flex flex-col items-center justify-center p-4 text-center">
+      
       <motion.h1 
         className="text-5xl md:text-6xl font-bold text-sky-700 mb-6"
         initial={{ opacity: 0, y: -50 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.8 }}
       >
-        Welcome to MediCare
+        Welcome to IdenZK
       </motion.h1>
       <motion.p 
         className="text-xl md:text-2xl text-gray-600 mb-8 max-w-2xl"
@@ -56,7 +60,7 @@ export default function LandingPage() {
           </motion.div>
         ))}
       </motion.div>
-    </div>
+    </div></>
   )
 }
 
