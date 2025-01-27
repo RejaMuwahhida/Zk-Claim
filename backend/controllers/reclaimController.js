@@ -14,17 +14,31 @@ exports.receiveEHR = async (req, res) => {
       return res.status(400).json({ success: false, message: "'did' and 'claimDisease' are required." });
     }
 
-    // Retrieve data from Akave bucket
+    // Function to download and process the file content
+    const downloadAndProcess = async (bucketName, fileName) => {
+      try {
+        const response = await axios.get(`${AKAVE_API_BASE_URL}/buckets/${bucketName}/files/${fileName}/download`, {
+          responseType: 'arraybuffer', // Using arraybuffer for binary data
+        });
+        console.log(`File downloaded: ${fileName}`);
+
+        // Process file content in memory
+        const fileContent = Buffer.from(response.data, 'binary').toString('utf8'); // Convert buffer to a string
+        const jsonData = JSON.parse(fileContent); // Parse the JSON content
+
+        return jsonData; // Return the parsed JSON data
+      } catch (error) {
+        console.error('Error downloading the file:', error.response?.data || error.message);
+        throw error;
+      }
+    };
+
+    // Retrieve data from Akave bucket and process it
     let diseases;
     try {
-      const bucketDataResponse = await axios.get(`${AKAVE_API_BASE_URL}/buckets/${did}`);
-
-      if (bucketDataResponse.status === 200 && bucketDataResponse.data) {
-        diseases = bucketDataResponse.data?.data?.diseases || [];
-        console.log('Akave API response:', JSON.stringify(bucketDataResponse.data, null, 2));
-      } else {
-        return res.status(404).json({ success: false, message: 'No data found for the provided DID in Akave' });
-      }
+      const bucketDataResponse = await downloadAndProcess(did, 'output.json'); // Replace 'your-file-name' with actual file name
+      diseases = bucketDataResponse.diseases || []; // Get diseases from the JSON response
+      console.log('Diseases:', diseases);
     } catch (error) {
       console.error('Error retrieving data from Akave:', error.response?.data || error.message);
       return res.status(500).json({
@@ -34,15 +48,13 @@ exports.receiveEHR = async (req, res) => {
       });
     }
 
-    // Check for the claimed disease in retrieved data
-    const diseaseToClaim = diseases.find(disease => disease.disease_name === claimDisease);
+    // Check for the claimed disease in the retrieved data
+    const diseaseToClaim = diseases.find(disease => disease.disease_name && disease.disease_name.toLowerCase() === claimDisease.toLowerCase());
 
-    let conditionCode;
+    let conditionCode = 0; // Default conditionCode is 0
 
-    if (!diseaseToClaim) {
-      conditionCode = 0;
-    } else {
-      conditionCode = 1;
+    if (diseaseToClaim) {
+      conditionCode = 1; // Set to 1 if disease found
     }
 
     const inputData = {
